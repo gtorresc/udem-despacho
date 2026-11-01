@@ -52,6 +52,13 @@ def test_cancelar_desde_la_pagina(puente):
     assert "error" in puente.cancelar(id_sol)  # dos veces: el segundo vuelve como dato, no como excepción
 
 
+def test_recargar_un_robot_desde_la_pagina(puente):
+    assert puente.mantener("R-01") is None
+    assert next(r for r in puente.estado()["robots"] if r["id"] == "R-01")["franja"] == "falla"
+    assert "error" in puente.mantener("R-01")  # ya está recargando
+    assert "error" in puente.mantener("R-99")
+
+
 def test_retratos_y_fuentes_viajan_en_base64(puente):
     assert puente.retrato("R-01", "Ruedas").startswith("data:image/png;base64,")
     fuentes = puente.fuentes()

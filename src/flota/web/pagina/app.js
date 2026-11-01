@@ -165,6 +165,7 @@ async function despacharCon(promesa) {
 function elegirRobot(id) {
   if (vista.llamada !== null) return despacharCon(api.despachar(vista.llamada, id));  // despacho manual
   vista.robotElegido = vista.robotElegido === id ? null : id;
+  anunciar($("robot-resultado"), "", true);
   $("ficha-robot").hidden = !vista.robotElegido;
   if (ultimo) dibujar(ultimo);
 }
@@ -278,6 +279,10 @@ function dibujarBarras(e) {
 // --- Controles ----------------------------------------------------------------------------
 function conectarControles(estado) {
   $("boton-cancelar").addEventListener("click", cancelarLlamada);
+  $("boton-mantener").addEventListener("click", async () => {
+    const r = await api.mantener(vista.robotElegido);
+    anunciar($("robot-resultado"), r && r.error ? r.error : "EN RECARGA", !(r && r.error));
+  });
   $("boton-auto").addEventListener("click", () => vista.llamada !== null && despacharCon(api.despachar_auto(vista.llamada)));
   document.querySelector("[data-cerrar=llamada]").addEventListener("click", cerrarLlamada);
   document.querySelector("[data-cerrar=robot]").addEventListener("click", () => elegirRobot(vista.robotElegido));

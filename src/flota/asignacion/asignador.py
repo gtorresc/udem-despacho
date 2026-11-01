@@ -116,11 +116,16 @@ class AsignadorEntregas:
                                  f"Solicitud {solicitud.id} entregada en {solicitud.destino.nombre}",
                                  robot.id)
         if robot.necesita_mantenimiento():
-            robot.enviar_a_mantenimiento()
-            self._en_mantenimiento[robot.id] = self._reloj() + DURACION_MANTENIMIENTO_S
-            self._bitacora.registrar(TipoEvento.MANTENIMIENTO,
-                                     "Batería bajo la reserva: enviado a recargar", robot.id)
+            self.enviar_a_mantenimiento(robot, "Batería bajo la reserva: enviado a recargar")
         self.reintentar_pendientes()
+
+    def enviar_a_mantenimiento(self, robot, motivo: str) -> None:
+        """Saca al robot de la flota durante la recarga; vuelve solo con liberar_mantenimientos."""
+        if self._flota.buscar(robot.id) is not robot:
+            raise ValueError(f"{robot.id} no pertenece a la flota")
+        robot.enviar_a_mantenimiento()  # ValueError si va en ruta o ya está recargando
+        self._en_mantenimiento[robot.id] = self._reloj() + DURACION_MANTENIMIENTO_S
+        self._bitacora.registrar(TipoEvento.MANTENIMIENTO, motivo, robot.id)
 
     def reintentar_pendientes(self) -> int:
         """Devuelve cuántas pendientes lograron asignarse."""

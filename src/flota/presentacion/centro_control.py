@@ -156,6 +156,13 @@ class CentroControl:
         ok = self._asignador.asignar(solicitud)
         return ok, "" if ok else solicitud.motivo
 
+    def mantener(self, id_robot: str) -> None:
+        """El operador manda un robot libre a recargar antes de que lo pida su batería."""
+        robot = self._flota.buscar(id_robot)
+        if robot is None:
+            raise ValueError(f"No existe el robot {id_robot}")
+        self._asignador.enviar_a_mantenimiento(robot, "Enviado a recargar por el operador")
+
     def cancelar(self, id_solicitud: int) -> None:
         """El operador descarta una llamada que aún espera robot; queda como fallida en la bitácora."""
         solicitud = self._buscar_solicitud(id_solicitud)

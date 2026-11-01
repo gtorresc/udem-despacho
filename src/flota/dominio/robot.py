@@ -136,6 +136,8 @@ class Robot(ABC):
         """Recarga la batería; el robot no recibe entregas hasta `terminar_mantenimiento`."""
         if self._estado is EstadoRobot.EN_RUTA:
             raise ValueError(f"{self._id} lleva una carga y no puede entrar a mantenimiento")
+        if self._estado is EstadoRobot.MANTENIMIENTO:
+            raise ValueError(f"{self._id} ya está en mantenimiento")
         self._bateria.recargar()
         self._estado = EstadoRobot.MANTENIMIENTO
 

@@ -261,6 +261,23 @@ def test_el_robot_vuelve_de_mantenimiento_al_terminar_la_recarga():
     assert len(bitacora.filtrar(TipoEvento.MANTENIMIENTO)) == 2
 
 
+def test_mantenimiento_manual_usa_el_mismo_reloj_y_la_misma_bitacora():
+    ahora = [0.0]
+    flota, bitacora = Flota(), Bitacora()
+    flota.agregar(RobotRuedas("R-01", CAFETERIA, nivel_bateria=60))
+    asignador = AsignadorEntregas(flota, ServicioClimaSimulado(), bitacora, reloj=lambda: ahora[0])
+    robot = flota.buscar("R-01")
+    asignador.enviar_a_mantenimiento(robot, "Enviado a recargar por el operador")
+    assert robot.estado is EstadoRobot.MANTENIMIENTO
+    with pytest.raises(ValueError):  # dos veces no reinicia la recarga
+        asignador.enviar_a_mantenimiento(robot, "otra vez")
+    ahora[0] = DURACION_MANTENIMIENTO_S
+    assert asignador.liberar_mantenimientos() == 1 and robot.estado is EstadoRobot.DISPONIBLE
+    assert bitacora.filtrar(TipoEvento.MANTENIMIENTO)[0].mensaje == "Enviado a recargar por el operador"
+    with pytest.raises(ValueError):
+        asignador.enviar_a_mantenimiento(RobotRuedas("R-99", CAFETERIA), "ajeno")
+
+
 def test_una_pendiente_espera_a_que_el_robot_salga_de_mantenimiento():
     ahora = [0.0]
     flota = Flota()

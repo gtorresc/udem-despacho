@@ -75,6 +75,9 @@ class PuenteWeb:
     def despachar_auto(self, id_solicitud):
         return self._llamar(self._centro.despachar_auto, id_solicitud)
 
+    def mantener(self, id_robot):
+        return self._llamar(self._centro.mantener, id_robot)
+
     def cancelar(self, id_solicitud):
         return self._llamar(self._centro.cancelar, id_solicitud)
 
