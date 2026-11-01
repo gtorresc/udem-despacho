@@ -37,7 +37,7 @@ def main(real: bool = False) -> None:
         pedir("Almuerzo a Derecho", "cafeteria", "derecho", Alimento("Almuerzo", 1.5, 60)),
         pedir("Reactivos a la huerta", "laboratorios", "eco_huerta", MaterialPeligroso("Reactivos", 4, 2)),
     ]
-    print("\n== Mal clima: viento de 45 km/h ==")
+    print("\n== Mal clima: viento de 45 km/h ==" if not real else "\n== Pedidos a azoteas con el clima real ==")
     if not real:
         simulado.configurar(viento=45, rafagas=55, lluvia=20, dia=True)
     pedidas.append(pedir("Documento a la azotea", "biblioteca", "azotea_b11", Documento("Acta", 1)))

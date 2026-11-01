@@ -17,6 +17,8 @@ USER_AGENT = "FlotaRobotsUdeM/1.0 (proyecto academico de POO)"
 
 def retrato(id_robot: str, tipo: str, carpeta: Path = CARPETA) -> Image.Image:
     """Llamar fuera del hilo de la página: la primera vez puede tardar hasta el timeout."""
+    if not id_robot.replace("-", "").isalnum():  # llega desde JavaScript y arma una ruta de archivo y una URL
+        return icono(tipo)
     archivo = carpeta / f"{id_robot}.png"
     if not archivo.exists():
         try:

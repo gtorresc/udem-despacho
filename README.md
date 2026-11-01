@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10 o superior">
-  <img src="https://img.shields.io/badge/pruebas-239%20en%20verde-3f9a6b" alt="239 pruebas en verde">
+  <img src="https://img.shields.io/badge/pruebas-243%20en%20verde-3f9a6b" alt="243 pruebas en verde">
   <img src="https://img.shields.io/badge/interfaz-web%203D%20%C2%B7%20three.js-1d7f7b" alt="Interfaz web 3D con three.js">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/licencia-MIT-f08a2c" alt="Licencia MIT"></a>
 </p>
@@ -119,7 +119,7 @@ python main.py --consola    # demo por texto: un día en el campus con clima sim
 python -m pytest            # pruebas
 ```
 
-- `--real` también vale con `--consola`, y `python main.py --depurar` abre las herramientas de desarrollo del navegador.
+- `--real` también vale con `--consola` (solo cambia el clima: la demo por texto no usa calendario), y `python main.py --depurar` abre las herramientas de desarrollo del navegador.
 - Con los simuladores, todo funciona sin internet. Las vistas CALLES y SATÉLITE necesitan internet la primera
   vez (unos 5 segundos); después quedan guardadas en `~/.cache/flota-udem/`, fuera del repositorio.
 

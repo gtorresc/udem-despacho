@@ -6,6 +6,7 @@ const $ = id => document.getElementById(id);
 const ETIQUETA = { libre: "DISPONIBLE", ocupado: "EN RUTA", falla: "MANTENIMIENTO" };
 const EJES = [["velocidad", "VEL"], ["carga", "CARGA"], ["autonomia", "AUTON"], ["economia", "ECON"], ["alcance", "ALCANCE"]];
 const RUMBOS = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
+const MAX_LINEAS_RADIO = 200;  // la bitácora completa sigue en EXPORTAR
 const COLOR_EVENTO = { ENTREGA_EXITOSA: "#46f0b4", ENTREGA_FALLIDA: "#d2453b", RECHAZO_CLIMA: "#f08a2c",
                        SOLICITUD_PENDIENTE: "#f08a2c", MANTENIMIENTO: "#6fb6ff", DESPACHO_RECHAZADO: "#d2453b" };
 
@@ -250,6 +251,7 @@ function dibujarRadio(bitacora) {
     linea.append(tipo, `  ${e.mensaje}`);
     registro.append(linea);
   }
+  while (registro.childElementCount > MAX_LINEAS_RADIO) registro.firstChild.remove();  // turnos largos no llenan la memoria
   registro.scrollTop = registro.scrollHeight;
   vista.mostrados = bitacora.total;
 }
@@ -278,6 +280,7 @@ function conectarControles(estado) {
   $("boton-exportar").addEventListener("click", async () => {
     const r = await api.exportar_bitacora();
     if (r && r.error) avisar(r.error);
+    else if (r) avisar(`reporte guardado: ${r.split(/[\\/]/).pop()}`);  // '' = el operador canceló
   });
 
   const modoClima = real => { marcarReal($("selector-clima"), real); $("simulador").querySelectorAll("input").forEach(i => i.disabled = real); };
