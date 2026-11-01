@@ -75,6 +75,9 @@ class PuenteWeb:
     def despachar_auto(self, id_solicitud):
         return self._llamar(self._centro.despachar_auto, id_solicitud)
 
+    def cancelar(self, id_solicitud):
+        return self._llamar(self._centro.cancelar, id_solicitud)
+
     def usar_clima(self, real):
         return self._llamar(self._centro.usar_clima, bool(real))
 

@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10 o superior">
-  <img src="https://img.shields.io/badge/pruebas-243%20en%20verde-3f9a6b" alt="243 pruebas en verde">
+  <img src="https://img.shields.io/badge/pruebas-247%20en%20verde-3f9a6b" alt="247 pruebas en verde">
   <img src="https://img.shields.io/badge/interfaz-web%203D%20%C2%B7%20three.js-1d7f7b" alt="Interfaz web 3D con three.js">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/licencia-MIT-f08a2c" alt="Licencia MIT"></a>
 </p>
@@ -128,6 +128,7 @@ python -m pytest            # pruebas
 | Crear una llamada | formulario "NUEVA LLAMADA": aparece una baliza sobre el edificio de origen |
 | Despachar a mano | clic en la baliza y luego en un robot de la plantilla |
 | Despachar en automático | botón AUTO, o tecla `A` con la llamada abierta |
+| Cancelar una llamada | botón CANCELAR, o tecla `X` con la llamada abierta: queda como entrega fallida en la bitácora |
 | Ver el nombre de un bloque | pasar el mouse por encima del edificio |
 | Ver el radar de un robot | clic en su tarjeta (sin llamada abierta) |
 | Vista 2D o 3D, girar | `M` y `R`, o los botones del mapa; rueda para el zoom, arrastre para moverse |

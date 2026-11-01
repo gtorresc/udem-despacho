@@ -189,6 +189,20 @@ def test_refrescar_el_clima_real_no_borra_el_ultimo_reporte(reloj):
     lento.suelto.set()
 
 
+def test_cancelar_una_llamada_de_la_bandeja_o_de_los_reintentos(centro):
+    manual = centro.crear_solicitud("cafeteria", "biblioteca", "documento", 1)
+    centro.configurar_clima(60, 10, True)
+    auto = centro.crear_solicitud("biblioteca", "azotea_b11", "documento", 1)
+    assert centro.despachar_auto(auto)[0] is False  # dron en tierra: queda en reintento
+    centro.cancelar(manual)
+    centro.cancelar(auto)
+    estado = centro.estado()
+    assert estado["balizas"] == [] and estado["resumen"]["esperando"] == 0
+    assert [e["tipo"] for e in estado["bitacora"]["ultimos"]][-2:] == ["ENTREGA_FALLIDA", "ENTREGA_FALLIDA"]
+    with pytest.raises(ValueError):  # ya no espera robot
+        centro.cancelar(manual)
+
+
 def test_el_mantenimiento_termina_solo(centro, reloj):
     """La recarga la cronometra el asignador (una sola regla para la web y la consola)."""
     id_sol = centro.crear_solicitud("biblioteca", "derecho", "documento", 1)

@@ -30,6 +30,7 @@ paneles, `PuenteWeb`) es capa de presentación y queda fuera del diagrama, igual
 | `TipoEvento` | `+ DESPACHO_RECHAZADO` |
 | `AsignadorEntregas` (revisión previa a la Fase 6) | `+ _en_mantenimiento`, `+ _reloj`, `+ liberar_mantenimientos()` (ya estaban en el código desde v2 y faltaban en el diagrama); `_pendientes` y `_en_curso` pasan de `list` a `dict` por id; `- _motivo_imposible()` |
 | `Robot` (revisión previa a la Fase 6) | `+ motivo_incapaz()`: las reglas que no cambian esperando, separadas de `motivo_rechazo()` |
+| `AsignadorEntregas` (revisión previa a la Fase 6) | `+ descartar()`: una solicitud pendiente falla sin llegar a un robot (imposible o cancelada por el operador) |
 
 ---
 

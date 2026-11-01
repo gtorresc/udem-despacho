@@ -124,6 +124,25 @@ def test_si_ningun_robot_podria_atenderla_falla_y_se_registra(entorno, carga, de
     assert f"Solicitud {s.id}" in fallida.mensaje
 
 
+def test_descartar_una_pendiente_la_saca_de_los_reintentos(entorno):
+    _, bitacora, clima, asignador = entorno
+    clima.configurar(viento=60, rafagas=70, lluvia=10, dia=True)
+    s = SolicitudEntrega(CAFETERIA, AZOTEA, Documento("Acta", 1))  # solo el dron llega: queda pendiente
+    assert not asignador.asignar(s) and s in asignador.pendientes
+    asignador.descartar(s, "cancelada por el operador")
+    assert s.estado is EstadoSolicitud.FALLIDA and s not in asignador.pendientes
+    assert bitacora.filtrar(TipoEvento.ENTREGA_FALLIDA)[-1].mensaje.endswith("cancelada por el operador")
+
+
+def test_no_se_descarta_una_que_ya_va_en_camino(entorno):
+    _, _, _, asignador = entorno
+    s = SolicitudEntrega(CAFETERIA, BIBLIOTECA, Documento("Tesis", 1))
+    assert asignador.asignar(s)
+    with pytest.raises(ValueError):
+        asignador.descartar(s, "tarde")
+    assert s.estado is EstadoSolicitud.ASIGNADA
+
+
 def test_pendiente_por_clima_se_reintenta_cuando_mejora(entorno):
     _, _, clima, asignador = entorno
     clima.configurar(viento=45, rafagas=50, lluvia=10, dia=True)

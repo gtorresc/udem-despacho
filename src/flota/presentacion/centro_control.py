@@ -156,6 +156,13 @@ class CentroControl:
         ok = self._asignador.asignar(solicitud)
         return ok, "" if ok else solicitud.motivo
 
+    def cancelar(self, id_solicitud: int) -> None:
+        """El operador descarta una llamada que aún espera robot; queda como fallida en la bitácora."""
+        solicitud = self._buscar_solicitud(id_solicitud)
+        self._asignador.descartar(solicitud, "cancelada por el operador")
+        if solicitud in self._bandeja:
+            self._bandeja.remove(solicitud)
+
     def usar_clima(self, real: bool) -> None:
         """La prueba en vivo del PRD: cambia el proveedor sin tocar la asignación."""
         self._asignador.cambiar_proveedor_clima(self._clima_real if real else self._clima_simulado)

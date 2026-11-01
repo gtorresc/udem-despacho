@@ -141,6 +141,14 @@ function mostrarLlamada(b) {
 
 function cerrarLlamada() { vista.llamada = null; $("ficha-llamada").hidden = true; }
 
+async function cancelarLlamada() {
+  if (vista.llamada === null) return;
+  const r = await api.cancelar(vista.llamada);
+  if (r && r.error) return anunciar($("llamada-resultado"), r.error, false);
+  cerrarLlamada();
+  avisar("llamada cancelada");
+}
+
 async function despacharCon(promesa) {
   const r = await promesa;
   if (r.error) return anunciar($("llamada-resultado"), r.error, false);
@@ -269,6 +277,7 @@ function dibujarBarras(e) {
 
 // --- Controles ----------------------------------------------------------------------------
 function conectarControles(estado) {
+  $("boton-cancelar").addEventListener("click", cancelarLlamada);
   $("boton-auto").addEventListener("click", () => vista.llamada !== null && despacharCon(api.despachar_auto(vista.llamada)));
   document.querySelector("[data-cerrar=llamada]").addEventListener("click", cerrarLlamada);
   document.querySelector("[data-cerrar=robot]").addEventListener("click", () => elegirRobot(vista.robotElegido));
@@ -298,6 +307,7 @@ function conectarControles(estado) {
     if (e.target.matches("input, select")) return;  // escribir en el formulario no dispara atajos
     if (e.key === "Escape") { cerrarLlamada(); if (vista.robotElegido) elegirRobot(vista.robotElegido); }
     if (e.key.toLowerCase() === "a" && vista.llamada !== null) despacharCon(api.despachar_auto(vista.llamada));
+    if (e.key.toLowerCase() === "x") cancelarLlamada();
     if (e.key.toLowerCase() === "m" && mapa.alternar) mapa.alternar();  // Tab queda para moverse con el teclado
     if (e.key.toLowerCase() === "r" && mapa.girar) mapa.girar();
     if (e.key.toLowerCase() === "v") cambiarVista();

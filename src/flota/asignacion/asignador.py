@@ -59,9 +59,7 @@ class AsignadorEntregas:
             raise ValueError(f"Solicitud {solicitud.id} ya está {solicitud.estado.value}")
         imposible = self._motivo_imposible(solicitud)
         if imposible:
-            solicitud.marcar_fallida(imposible)
-            self._pendientes.pop(solicitud.id, None)
-            self._bitacora.registrar(TipoEvento.ENTREGA_FALLIDA, f"Solicitud {solicitud.id}: {imposible}")
+            self.descartar(solicitud, imposible)
             return False
         asignada, motivo = self._intentar(solicitud)
         if asignada:
@@ -72,6 +70,14 @@ class AsignadorEntregas:
             self._bitacora.registrar(TipoEvento.SOLICITUD_PENDIENTE,
                                      f"Solicitud {solicitud.id}: {motivo}")
         return asignada
+
+    def descartar(self, solicitud: SolicitudEntrega, motivo: str) -> None:
+        """La solicitud falla sin llegar a un robot (imposible o cancelada) y sale de los reintentos."""
+        if solicitud.estado is not EstadoSolicitud.PENDIENTE:  # una asignada ya cargó su robot
+            raise ValueError(f"Solicitud {solicitud.id} ya está {solicitud.estado.value}")
+        solicitud.marcar_fallida(motivo)
+        self._pendientes.pop(solicitud.id, None)
+        self._bitacora.registrar(TipoEvento.ENTREGA_FALLIDA, f"Solicitud {solicitud.id}: {motivo}")
 
     def despachar(self, solicitud: SolicitudEntrega, robot) -> tuple[bool, str]:
         """Despacho manual: el operador elige el robot y el sistema valida las mismas reglas.

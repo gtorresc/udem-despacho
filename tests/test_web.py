@@ -46,6 +46,12 @@ def test_despacho_manual_y_clima_desde_la_pagina(puente):
     assert puente.estado()["resumen"]["en_ruta"] == 1
 
 
+def test_cancelar_desde_la_pagina(puente):
+    id_sol = puente.crear_solicitud("cafeteria", "biblioteca", "documento", 1)
+    assert puente.cancelar(id_sol) is None
+    assert "error" in puente.cancelar(id_sol)  # dos veces: el segundo vuelve como dato, no como excepción
+
+
 def test_retratos_y_fuentes_viajan_en_base64(puente):
     assert puente.retrato("R-01", "Ruedas").startswith("data:image/png;base64,")
     fuentes = puente.fuentes()
