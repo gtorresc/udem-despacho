@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/img/banner.png" alt="UdeM·DESPACHO: centro de control para una flota de robots de reparto en el campus de la Universidad de Medellín" width="100%">
+  <img src="docs/img/banner.png" alt="UdeM·DESPACHO, flota de reparto: fichas de los robots R-01, R-02, O-01 y D-01 sobre el mapa 3D del campus de la Universidad de Medellín" width="100%">
 </p>
 
 <p align="center">
@@ -103,7 +103,11 @@ entregada se puede ver con `git checkout v1-entrega`.
 Requisitos: Python 3.10 o superior y Windows 10/11 con WebView2 (viene instalado en Windows 11).
 
 ```bash
-git clone https://github.com/gtorresc/proyecto-poo.git
+git clone https://github.com/gtorresc/udem-despacho.git
+```
+
+```bash
+cd udem-despacho
 ```
 
 ```bash
