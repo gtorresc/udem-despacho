@@ -232,6 +232,18 @@ def test_auto_dos_veces_en_una_pendiente_no_rompe_el_reloj(centro, reloj):
     assert solicitud.estado is EstadoSolicitud.ENTREGADA
 
 
+def test_la_pendiente_que_toma_un_robot_al_llegar_empieza_su_viaje_en_el_mismo_tick(centro, reloj):
+    """Antes el viaje empezaba en el tick siguiente y estado() fallaba si había robots quietos en el origen."""
+    centro.despachar(centro.crear_solicitud("cafeteria", "azotea_b12", "documento", 1), "D-01")
+    segunda = centro.crear_solicitud("estacion", "azotea_b11", "documento", 1)  # solo el dron llega
+    assert not centro.despachar_auto(segunda)[0]  # el dron va ocupado: queda en reintento
+    centro.tick()
+    reloj.ahora += 600
+    assert centro.tick()  # el dron entrega y el reintento le da la segunda, que sale de la estación
+    dron = robot(centro, "D-01")  # R-01, R-02 y O-01 siguen quietos en la estación
+    assert dron["mision"]["solicitud"] == segunda and dron["recorrido"]
+
+
 def test_la_bitacora_llega_como_texto(centro):
     id_sol = centro.crear_solicitud("cafeteria", "biblioteca", "documento", 1)
     centro.despachar(id_sol, "D-01")  # el dron sí puede, sin tormenta

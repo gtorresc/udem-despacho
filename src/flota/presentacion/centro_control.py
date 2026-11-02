@@ -243,10 +243,8 @@ class CentroControl:
         for robot in self._flota.robots:
             if robot.id not in ocupados:
                 self._de_donde[robot.id] = robot.ubicacion
-        for solicitud in self._asignador.en_curso:
-            if solicitud.id not in self._viajes:
-                self._iniciar_viaje(solicitud, ahora)
-        llegadas = [s for s in self._asignador.en_curso if self._progreso(s.id, ahora) >= 1]
+        llegadas = [s for s in self._asignador.en_curso
+                    if s.id in self._viajes and self._progreso(s.id, ahora) >= 1]
         for solicitud in llegadas:
             del self._viajes[solicitud.id]
             self._de_donde[solicitud.robot.id] = solicitud.destino  # por si se reasigna en este mismo tick
@@ -256,6 +254,10 @@ class CentroControl:
         listos = self._asignador.liberar_mantenimientos()  # la recarga la cronometra el dominio
         if listos:
             self._asignador.reintentar_pendientes()
+        # al final: una entrega o una recarga de este tick pueden haberle dado una pendiente a un robot
+        for solicitud in self._asignador.en_curso:
+            if solicitud.id not in self._viajes:
+                self._iniciar_viaje(solicitud, ahora)
         return bool(llegadas or listos)
 
     def _iniciar_viaje(self, solicitud, ahora: float) -> None:
