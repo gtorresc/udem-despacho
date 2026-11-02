@@ -1,23 +1,32 @@
 # Fase 6 — Reflexión crítica
 
-> Documento individual. Se escribe con palabras propias: el PRD pide que la reflexión sea personal y
-> la contrasta con la defensa oral. Borrar esta nota al terminar.
-
 ## 1. ¿Qué parte del diseño volvería a hacer distinto si empezara de nuevo? ¿Por qué?
 
-_(pendiente)_
+Si tuviera que reiniciar el proyecto, modelaría formalmente el ciclo de vida completo de la solicitud y del robot desde la fase inicial de diseño, definiendo de forma explícita cada estado posible, las transiciones válidas y la entidad responsable de ejecutarlas. Al principio concebimos los estados como etiquetas reactivas que se iban agregando o modificando a medida que surgían casos borde en el código. Esta falta de rigor preventivo generó incoherencias críticas; por ejemplo, definimos en el UML `EstadoSolicitud.FALLIDA`, `marcar_fallida()` y el evento `ENTREGA_FALLIDA`, pero ningún componente los invocaba. Esto provocaba que pedidos estructuralmente imposibles —como enviar material peligroso a una azotea o una carga de 50 kg, más de lo que lleva cualquier robot de la flota— entraran en un bucle infinito de reintentos sin cancelarse jamás.
+
+El costo de corregir este vacío no fue menor: obligó a refactorizar la lógica de decisión dividiendo responsabilidades entre reglas fijas e invariables (`motivo_incapaz`, para peso, zonas y tipo de carga) y reglas dinámicas o pasajeras (`motivo_rechazo`, para batería insuficiente o estado ocupado), además de introducir `_motivo_imposible` en el asignador. Un síntoma idéntico ocurrió con el mantenimiento: el robot entraba en recarga pero nadie llamaba a `terminar_mantenimiento()`, dejándolo atrapado para siempre en ese estado, sumado al absurdo visual de recargar la batería al 100 % al entrar al taller en vez de al salir. Tuvimos que implementar un cronómetro interno en el asignador (`_en_mantenimiento`, `_reloj`, `liberar_mantenimientos`) para orquestar la salida de forma automática a los 30 segundos.
+
+Todo este retrabajo demostró que un estado en un enum que ningún flujo alcanza es simplemente una regla de negocio rota o sin implementar. Si en la Fase 3 hubiéramos complementado el diagrama de clases con un diagrama de máquina de estados formal en UML, habríamos detectado de inmediato la ausencia de transiciones de salida para el mantenimiento y la falta de un camino de descarte hacia el estado fallido antes de escribir una sola línea de código en Python.
 
 ## 2. ¿Qué principio de POO fue más difícil de aplicar correctamente y qué error cometí primero?
 
-_(pendiente)_
+El principio más difícil de dominar fue el encapsulamiento. Con frecuencia se asume erróneamente que encapsular se reduce a anteponer guiones bajos para declarar atributos privados y exponer getters o setters; sin embargo, el verdadero reto radica en garantizar la invariabilidad del modelo decidiendo con precisión quién tiene la potestad de validar qué y en qué orden secuencial deben mutar los objetos involucrados.
+
+El primer error concreto derivado de esta confusión ocurrió en el flujo de asignación (error H1). El asignador llamaba primero a `robot.cargar()` y solo después invocaba `solicitud.asignar()`, que era el método encargado de verificar si el pedido seguía disponible. Si la solicitud ya no estaba pendiente, la validación final abortaba el proceso, pero el robot ya había mutado su estado a "EN RUTA" con una carga fantasma a bordo. Esta misma falla de acoplamiento reapareció más adelante en `despachar` (corregida en el commit `e9c796f`) y en la operación `descartar`, donde inicialmente confiamos en `marcar_fallida()`, la cual permitía cancelar solicitudes que ya estaban asignadas, dejando al robot físicamente cargado y sin misión asignada.
+
+Descubrimos estos fallos de integridad gracias a la batería de pruebas unitarias, lo que forzó a trasladar las validaciones contextuales al asignador —que es la única entidad con visión global de la operación— antes de permitir que cualquier entidad secundaria modifique su estado interno. La gran regla aprendida fue establecer una única puerta de entrada y validar siempre las precondiciones antes de alterar cualquier variable del sistema; un criterio que consolidamos al unificar las recargas automáticas y manuales a través de un único método centralizado: `AsignadorEntregas.enviar_a_mantenimiento()`.
 
 ## 3. ¿Qué pasaría con el diseño si mañana se agrega un nuevo tipo de robot, de carga, o se cambia de proveedor de API de clima? ¿Qué tan fácil sería, y qué dice eso de la calidad del diseño?
 
-_(pendiente)_
+Integrar un robot nuevo, un tipo de carga inédito o un proveedor meteorológico alternativo es un proceso directo y altamente desacoplado, ya que el núcleo del sistema aplica el principio de inversión de dependencias y el principio abierto/cerrado. Tanto el asignador como las capas de interfaz interactúan exclusivamente contra abstracciones polimórficas (`Robot`, `Carga`, `ProveedorClima`) y no contra implementaciones concretas. Por ejemplo, para incorporar una nueva API meteorológica solo es necesario crear una clase que herede de `ProveedorClima`, implementar el método `obtener_reporte()` devolviendo un `ReporteClima` tipado e inyectar esta instancia al `AsignadorEntregas`; exactamente como se comprobó en la web con el selector dinámico `usar_clima` y la incorporación de Nager.Date mediante `ProveedorCalendario` sin alterar una sola línea de lógica del asignador.
+
+De forma similar, añadir un robot requiere únicamente crear una subclase de `Robot` que sobrescriba `zonas_accesibles()`, `costo_por_km()` y `consumo_por_km()`, registrarla en el diccionario `TIPOS_ROBOT` (`campus.py`) y agregar la entidad a `campus.json`. El asignador no se modifica en absoluto: continúa filtrando con `motivo_rechazo` y priorizando con `calcular_costo`, evaluando capacidades polimórficas en vez de consultar tipos con `isinstance`. Lo mismo aplica para una nueva carga: se define su subclase heredando de `Carga`, se ajustan `recargo()` y `es_compatible_con(robot)`, y se enlaza a `TIPOS_CARGA` en `centro_control.py`.
+
+No todo es gratis, y eso también dice algo del diseño. Cada tipo nuevo se registra en dos lugares (la subclase y su diccionario `TIPOS_*`), y un robot que llegue a un sitio nuevo, como un lago, necesita además un valor en `Zona`. Hay reglas que Python no puede imponer: el margen de mantenimiento supone que ningún viaje gasta más de 10 puntos de batería, y un robot más gastador quedaría varado. Por eso agregamos una prueba que lo verifica con el campus real (`test_campus.py`). La conclusión es que el diseño es de buena calidad porque los cambios previsibles se hacen agregando código y no modificando el asignador, pero esa calidad no la garantiza solo la jerarquía de clases: la completan las pruebas que vigilan los supuestos que el tipo no expresa.
 
 ---
 
-Material para releer antes de escribir (no para copiar):
+Material de apoyo:
 [anexo de cambios de diseño](../CAMBIOS_DISENO.md) (los "Qué aprendimos"),
 [changelog del UML](../fase3-uml/CHANGELOG_UML.md),
 [justificación de la Fase 4](../fase4-justificacion/fase4-justificacion.md),
