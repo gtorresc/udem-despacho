@@ -28,7 +28,7 @@ def entorno():
 
 @pytest.mark.parametrize("robot, solicitud, motivo", [
     (RobotRuedas("R-01", ESTACION, carga_maxima_kg=5),
-     SolicitudEntrega(CAFETERIA, BIBLIOTECA, Documento("Cajas", 8)), "sobrepeso: 8 kg > 5 kg"),
+     SolicitudEntrega(CAFETERIA, BIBLIOTECA, Documento("Cajas", 8)), "sobrepeso en R-01: 8 kg > 5 kg"),
     (RobotRuedas("R-01", ESTACION),
      SolicitudEntrega(CAFETERIA, AZOTEA, Documento("Acta", 1)), "R-01 no llega a Azotea Bloque 11 (azotea)"),
     (RobotOrugas("O-01", ESTACION),

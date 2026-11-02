@@ -101,7 +101,7 @@ class Robot(ABC):
         carga = solicitud.carga
         zonas = self.zonas_accesibles()
         if carga.peso_kg > self._carga_maxima_kg:
-            return f"sobrepeso: {carga.peso_kg:g} kg > {self._carga_maxima_kg:g} kg"
+            return f"sobrepeso en {self._id}: {carga.peso_kg:g} kg > {self._carga_maxima_kg:g} kg"
         for lugar in (solicitud.origen, solicitud.destino):
             if lugar.zona not in zonas:
                 return f"{self._id} no llega a {lugar.nombre} ({lugar.zona.value})"

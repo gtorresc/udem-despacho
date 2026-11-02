@@ -124,6 +124,14 @@ def test_si_ningun_robot_podria_atenderla_falla_y_se_registra(entorno, carga, de
     assert f"Solicitud {s.id}" in fallida.mensaje
 
 
+def test_el_motivo_de_una_llamada_imposible_nombra_a_cada_robot(entorno):
+    _, _, _, asignador = entorno
+    s = SolicitudEntrega(CAFETERIA, BIBLIOTECA, Documento("Archivo muerto", 50))
+    asignador.asignar(s)
+    assert s.motivo == ("ningún robot de la flota puede llevarla (sobrepeso en R-01: 50 kg > 20 kg; "
+                        "sobrepeso en O-01: 50 kg > 40 kg; sobrepeso en D-01: 50 kg > 3 kg)")
+
+
 def test_descartar_una_pendiente_la_saca_de_los_reintentos(entorno):
     _, bitacora, clima, asignador = entorno
     clima.configurar(viento=60, rafagas=70, lluvia=10, dia=True)
