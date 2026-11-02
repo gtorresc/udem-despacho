@@ -7,7 +7,7 @@ class Carga(ABC):
     def __init__(self, descripcion: str, peso_kg: float):
         if not descripcion or not descripcion.strip():
             raise ValueError("La carga necesita una descripción")
-        if peso_kg <= 0:
+        if not peso_kg > 0:  # así también se rechaza NaN, que no es menor ni mayor que nada
             raise ValueError("El peso debe ser mayor que 0")
         self._descripcion = descripcion.strip()
         self._peso_kg = float(peso_kg)

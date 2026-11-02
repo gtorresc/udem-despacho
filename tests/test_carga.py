@@ -44,7 +44,7 @@ def test_polimorfismo_del_recargo():
     assert [c.recargo() for c in cargas] == [1.0, 1.2, 1.3, 1.5]
 
 
-@pytest.mark.parametrize("peso", [0, -2])
+@pytest.mark.parametrize("peso", [0, -2, float("nan")])
 def test_peso_debe_ser_positivo(peso):
     with pytest.raises(ValueError):
         Documento("Sobre", peso)
