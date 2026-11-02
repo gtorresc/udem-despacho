@@ -9,6 +9,7 @@ import pytest
 
 from flota.campus import cargar_campus, cargar_geometria, crear_red_senderos
 from flota.dominio.estado_robot import EstadoRobot
+from flota.dominio.robot import MARGEN_MANTENIMIENTO
 from flota.dominio.ubicacion import Ubicacion, Zona
 from flota.presentacion.centro_control import dentro
 
@@ -103,3 +104,15 @@ def test_los_robots_del_campus_usan_los_senderos():
     o, d = sitio["cafeteria"], sitio["biblioteca"]
     assert len(flota.buscar("R-01").trazar_ruta(o, d).puntos) > 2  # pasa por los senderos
     assert len(flota.buscar("D-01").trazar_ruta(o, d).puntos) == 2  # vuela recto
+
+
+def test_el_margen_de_mantenimiento_cubre_el_viaje_mas_largo_de_cada_robot():
+    """Un robot fuera de mantenimiento tiene más de reserva + margen. Si un viaje gastara más que el
+    margen, podría quedar varado: sin batería para la llamada y sin bajar nunca al umbral de recarga."""
+    sitio, flota = cargar_campus()
+    for robot in flota.robots:
+        lugares = [u for u in sitio.values() if u.zona in robot.zonas_accesibles()]
+        gasto = {(a, b): robot.trazar_ruta(a, b).distancia_km * robot.consumo_por_km()
+                 for a in lugares for b in lugares}
+        peor = max(gasto[p, o] + gasto[o, d] for p in lugares for o in lugares for d in lugares)
+        assert peor < MARGEN_MANTENIMIENTO, f"{robot.id}: el peor viaje gasta {peor:.1f} %"

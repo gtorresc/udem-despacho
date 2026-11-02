@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10 o superior">
-  <img src="https://img.shields.io/badge/pruebas-250%20en%20verde-3f9a6b" alt="250 pruebas en verde">
+  <img src="https://img.shields.io/badge/pruebas-251%20en%20verde-3f9a6b" alt="251 pruebas en verde">
   <img src="https://img.shields.io/badge/interfaz-web%203D%20%C2%B7%20three.js-1d7f7b" alt="Interfaz web 3D con three.js">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/licencia-MIT-f08a2c" alt="Licencia MIT"></a>
 </p>
@@ -189,6 +189,7 @@ Agregar un tipo nuevo no toca el asignador ni la interfaz: el polimorfismo hace 
 1. En `src/flota/dominio/robot.py`, una subclase de `Robot` con `zonas_accesibles()`, `costo_por_km()` y `consumo_por_km()`. Si hace falta, redefine `trazar_ruta()`, `requiere_clima()`, `es_aereo()` o `terreno_irregular()`.
 2. En `src/flota/campus.py`, una línea en `TIPOS_ROBOT` (`"anfibio": RobotAnfibio`), y un robot de ese tipo en `src/flota/campus.json`.
 3. Si llega a un lugar nuevo (un lago), un valor más en `Zona` (`dominio/ubicacion.py`) y la ubicación en `campus.json`.
+4. `python -m pytest`: una prueba revisa que el viaje más largo del robot nuevo gaste menos que `MARGEN_MANTENIMIENTO` (10 puntos de batería). Si consume más, podría quedarse sin batería para una llamada sin bajar nunca al umbral de recarga.
 
 **Una carga nueva** (por ejemplo, muestras biológicas):
 
