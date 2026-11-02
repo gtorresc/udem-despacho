@@ -69,7 +69,7 @@ cosas que el papel no mostraba. El detalle de cada cambio (qué, por qué y qué
 | RF8 Costo y tiempo | Robot (polimórfico), Carga | `Robot.calcular_costo()`, `calcular_tiempo_min()`, `costo_por_km()` en cada subtipo, `Carga.recargo()` |
 | RF9 Bitácora de eventos | Bitacora, EventoBitacora | `Bitacora ◆— EventoBitacora`, enum `TipoEvento` |
 | RF10 Reporte | Bitacora | `Bitacora.generar_reporte()` |
-| RF11 Mantenimiento | Robot, Bateria | `Robot.enviar_a_mantenimiento()`, `Bateria.recargar()` |
+| RF11 Mantenimiento | Robot, Bateria | `Robot.enviar_a_mantenimiento()`, `Robot.terminar_mantenimiento()` (llama a `Bateria.recargar()` al salir) |
 | RF12 Reintentar pendientes | AsignadorEntregas | `AsignadorEntregas.reintentar_pendientes()` |
 | Supuesto S1 (umbrales de clima) | ReporteClima / UmbralesClima | `UmbralesClima` (30 km/h, 40 km/h, 50 %) |
 | Supuesto S3 (reserva de batería 15 %) | Bateria | `Bateria._reserva_minima = 15.0`, `alcanza_para()` |

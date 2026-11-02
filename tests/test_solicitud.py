@@ -138,14 +138,14 @@ def test_entregar_sin_carga_falla():
         RobotRuedas("R-01", ESTACION).entregar(BIBLIOTECA)
 
 
-def test_mantenimiento_recarga_y_bloquea_hasta_terminar():
+def test_mantenimiento_bloquea_y_recarga_al_terminar():
     robot = RobotRuedas("R-01", ESTACION, nivel_bateria=10)
     robot.enviar_a_mantenimiento()
-    assert robot.estado is EstadoRobot.MANTENIMIENTO and robot.nivel_bateria == 100
+    assert robot.estado is EstadoRobot.MANTENIMIENTO and robot.nivel_bateria == 10
     with pytest.raises(ValueError):
         robot.cargar(Documento("Tesis", 1))
     robot.terminar_mantenimiento()
-    assert robot.estado is EstadoRobot.DISPONIBLE
+    assert robot.estado is EstadoRobot.DISPONIBLE and robot.nivel_bateria == 100
 
 
 def test_no_se_envia_a_mantenimiento_con_carga():

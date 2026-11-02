@@ -133,12 +133,11 @@ class Robot(ABC):
         self._estado = EstadoRobot.DISPONIBLE
 
     def enviar_a_mantenimiento(self) -> None:
-        """Recarga la batería; el robot no recibe entregas hasta `terminar_mantenimiento`."""
+        """El robot deja de recibir entregas hasta `terminar_mantenimiento`, que lo devuelve recargado."""
         if self._estado is EstadoRobot.EN_RUTA:
             raise ValueError(f"{self._id} lleva una carga y no puede entrar a mantenimiento")
         if self._estado is EstadoRobot.MANTENIMIENTO:
             raise ValueError(f"{self._id} ya está en mantenimiento")
-        self._bateria.recargar()
         self._estado = EstadoRobot.MANTENIMIENTO
 
     def necesita_mantenimiento(self) -> bool:
@@ -148,6 +147,7 @@ class Robot(ABC):
     def terminar_mantenimiento(self) -> None:
         if self._estado is not EstadoRobot.MANTENIMIENTO:
             raise ValueError(f"{self._id} no está en mantenimiento")
+        self._bateria.recargar()  # al salir: mientras recarga, la ficha muestra la batería real
         self._estado = EstadoRobot.DISPONIBLE
 
     # --- Consultas (solo lectura) -----------------------------------------

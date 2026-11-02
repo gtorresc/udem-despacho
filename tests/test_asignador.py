@@ -176,7 +176,7 @@ def test_bateria_bajo_la_reserva_manda_a_mantenimiento(entorno):
     assert asignador.asignar(s)
     asignador.completar_entrega(s)
     robot = flota.buscar("R-02")
-    assert robot.estado is EstadoRobot.MANTENIMIENTO and robot.nivel_bateria == 100
+    assert robot.estado is EstadoRobot.MANTENIMIENTO and robot.nivel_bateria < 100  # se recarga al salir
     assert bitacora.filtrar(TipoEvento.MANTENIMIENTO)[0].robot_id == "R-02"
 
 
@@ -272,6 +272,7 @@ def test_el_robot_vuelve_de_mantenimiento_al_terminar_la_recarga():
     assert asignador.liberar_mantenimientos() == 0 and robot.estado is EstadoRobot.MANTENIMIENTO
     ahora[0] = DURACION_MANTENIMIENTO_S
     assert asignador.liberar_mantenimientos() == 1 and robot.estado is EstadoRobot.DISPONIBLE
+    assert robot.nivel_bateria == 100
     assert len(bitacora.filtrar(TipoEvento.MANTENIMIENTO)) == 2
 
 
