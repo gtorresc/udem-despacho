@@ -93,7 +93,7 @@ class Robot(ABC):
         consumo = (self._consumo_entre(self._ubicacion, solicitud.origen)
                    + self._consumo_entre(solicitud.origen, solicitud.destino))
         if not self._bateria.alcanza_para(consumo):
-            return f"batería insuficiente: {self.nivel_bateria:.0f} %"
+            return f"{self._id} no tiene batería suficiente ({self.nivel_bateria:.0f} %)"
         return None
 
     def motivo_incapaz(self, solicitud) -> Optional[str]:

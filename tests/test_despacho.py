@@ -34,7 +34,7 @@ def entorno():
     (RobotOrugas("O-01", ESTACION),
      SolicitudEntrega(CAFETERIA, BIBLIOTECA, Fragil("Microscopio", 2)), "carga incompatible: Fragil en O-01"),
     (RobotRuedas("R-01", ESTACION, nivel_bateria=16),
-     SolicitudEntrega(CAFETERIA, BIBLIOTECA, Documento("Acta", 1)), "batería insuficiente: 16 %"),
+     SolicitudEntrega(CAFETERIA, BIBLIOTECA, Documento("Acta", 1)), "R-01 no tiene batería suficiente (16 %)"),
 ])
 def test_motivo_rechazo_nombra_la_regla_que_falla(robot, solicitud, motivo):
     assert robot.motivo_rechazo(solicitud) == motivo

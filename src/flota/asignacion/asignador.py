@@ -191,8 +191,12 @@ class AsignadorEntregas:
             elegido = costo, robot
             break
         if elegido is None:
-            return False, ("clima desfavorable para el dron" if rechazada_por_clima
-                           else "ningún robot disponible puede atenderla")
+            if rechazada_por_clima:
+                return False, "clima desfavorable para el dron"
+            # por qué espera cada robot que sí podría llevarla (ocupado, recargando o sin batería)
+            motivos = [r.motivo_rechazo(solicitud) for r in self._flota.robots
+                       if r.motivo_incapaz(solicitud) is None]
+            return False, "ningún robot disponible puede atenderla" + (": " + "; ".join(motivos) if motivos else "")
         self._asignar_a(solicitud, elegido[1], elegido[0])
         return True, ""
 

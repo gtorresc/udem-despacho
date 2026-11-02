@@ -220,7 +220,21 @@ def test_reintentar_no_repite_el_rechazo_por_clima_y_actualiza_el_motivo(entorno
     flota.buscar("D-01").cargar(Documento("Otra", 1))  # el clima mejora, pero el dron ya está ocupado
     clima.configurar(viento=10, rafagas=15, lluvia=10, dia=True)
     asignador.reintentar_pendientes()
-    assert s.motivo == "ningún robot disponible puede atenderla" and s in asignador.pendientes
+    assert s.motivo == "ningún robot disponible puede atenderla: D-01 no está disponible (en ruta)"
+    assert s in asignador.pendientes
+
+
+def test_auto_dice_por_que_espera_cada_robot_capaz():
+    flota = Flota()
+    flota.agregar(RobotRuedas("R-01", ESTACION, tiene_control_temperatura=True, nivel_bateria=16))
+    flota.agregar(ocupado := RobotRuedas("R-02", ESTACION, tiene_control_temperatura=True))
+    flota.agregar(Dron("D-01", ESTACION))  # sin control de temperatura: no se nombra
+    ocupado.cargar(Documento("Otra", 1))
+    asignador = AsignadorEntregas(flota, ServicioClimaSimulado(), Bitacora())
+    s = SolicitudEntrega(CAFETERIA, BIBLIOTECA, Alimento("Almuerzo", 1, 30))
+    assert not asignador.asignar(s)
+    assert s.motivo == ("ningún robot disponible puede atenderla: "
+                        "R-01 no tiene batería suficiente (16 %); R-02 no está disponible (en ruta)")
 
 
 def test_no_se_reasigna_una_solicitud_que_ya_no_esta_pendiente(entorno):
