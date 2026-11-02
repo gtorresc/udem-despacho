@@ -108,6 +108,8 @@ Requisitos: Python 3.10 o superior y Windows 10/11 con WebView2 (viene instalado
 git clone https://github.com/gtorresc/udem-despacho.git
 ```
 
+Sin Git: descarga `udem-despacho-v1.0.0.zip` del [último release](https://github.com/gtorresc/udem-despacho/releases/latest) y descomprímelo.
+
 ```bash
 cd udem-despacho
 ```
