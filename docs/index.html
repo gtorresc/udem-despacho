@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UdeM·DESPACHO — Flota de robots de reparto</title>
+  <meta name="description" content="Centro de control para una flota de robots de reparto en el campus de la Universidad de Medellín. Python, POO, OpenStreetMap, Open-Meteo y three.js.">
+  <meta property="og:title" content="UdeM·DESPACHO — Flota de robots de reparto">
+  <meta property="og:description" content="Centro de control para una flota de robots de reparto en el campus de la Universidad de Medellín.">
+  <meta property="og:image" content="https://gtorresc.github.io/udem-despacho/img/banner.png">
+  <meta name="theme-color" content="#252422">
+  <link rel="icon" href="sitio/retratos/D-01.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sitio/estilos.css">
+  <script type="importmap">{ "imports": { "three": "./sitio/app/vendor/three.module.min.js" } }</script>
+  <script type="module" src="sitio/sitio.js"></script>
+</head>
+<body>
+  <a class="saltar" href="#demo">Saltar a la demo</a>
+  <div class="progreso" id="progreso" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <nav class="nav-lado">
+      <a href="#demo">Demo</a>
+      <a href="#funciones">Qué hace</a>
+      <a href="#instalacion">Instalar</a>
+    </nav>
+    <a class="marca" href="#inicio" aria-label="UdeM·DESPACHO, inicio">UdeM·DESPACHO</a>
+    <nav class="nav-lado">
+      <a href="#changelog">Changelog</a>
+      <a href="#contacto">Contacto</a>
+      <a class="pastilla-contorno" href="https://github.com/gtorresc/udem-despacho">GitHub <span class="flecha" aria-hidden="true">↗</span></a>
+    </nav>
+    <button class="menu" id="menu" aria-expanded="false" aria-controls="menu-movil">MENÚ</button>
+  </header>
+  <nav class="menu-movil" id="menu-movil" hidden>
+    <a href="#demo">Demo</a><a href="#funciones">Qué hace</a><a href="#poo">Por dentro</a>
+    <a href="#instalacion">Instalar</a><a href="#uso">Atajos</a><a href="#changelog">Changelog</a>
+    <a href="#contacto">Contacto</a><a href="https://github.com/gtorresc/udem-despacho">GitHub ↗</a>
+  </nav>
+
+  <main>
+    <!-- 01 · Portada ------------------------------------------------------------------------------>
+    <section class="portada papel" id="inicio">
+      <div class="portada-texto">
+        <p class="marcador"><span class="numero">01</span> CENTRAL DE DESPACHO · CAMPUS UdeM</p>
+        <h1 class="titular" id="titular">UdeM·DESPACHO</h1>
+        <p class="mano">flota de reparto</p>
+        <p class="bajada">Un centro de control para robots de ruedas, orugas y drones que reparten dentro del
+          campus de la Universidad de Medellín. Asigna cada llamada al robot compatible más barato, recorre los
+          senderos reales y no deja volar un dron sin consultar el clima.</p>
+        <div class="acciones">
+          <a class="boton boton-azul" href="#demo">Ver la demo <span class="flecha" aria-hidden="true">▶</span></a>
+          <a class="boton boton-carbon" href="#instalacion">Instalar <span class="flecha" aria-hidden="true">↓</span></a>
+        </div>
+        <dl class="contadores">
+          <div><dt>robots</dt><dd data-contar="4">4</dd></div>
+          <div><dt>tipos</dt><dd data-contar="3">3</dd></div>
+          <div><dt>APIs</dt><dd data-contar="2">2</dd></div>
+          <div><dt>pruebas</dt><dd data-contar="269">269</dd></div>
+        </dl>
+      </div>
+      <div class="abanico" aria-label="La flota: R-01, R-02, O-01 y D-01">
+        <article class="credencial inclinable" style="--giro:-9deg; --y:18px">
+          <p class="franja libre">DISPONIBLE</p><img src="sitio/retratos/R-01.png" alt="" width="120" height="120">
+          <h3>R-01</h3><p class="tipo">RUEDAS · 20 kg</p>
+        </article>
+        <article class="credencial inclinable" style="--giro:-3deg; --y:0px">
+          <p class="franja ocupado">EN RUTA</p><img src="sitio/retratos/R-02.png" alt="" width="120" height="120">
+          <h3>R-02</h3><p class="tipo">RUEDAS · FRÍO</p>
+        </article>
+        <article class="credencial inclinable" style="--giro:4deg; --y:10px">
+          <p class="franja ocupado">EN RUTA</p><img src="sitio/retratos/O-01.png" alt="" width="120" height="120">
+          <h3>O-01</h3><p class="tipo">ORUGAS · 40 kg</p>
+        </article>
+        <article class="credencial inclinable" style="--giro:10deg; --y:26px">
+          <p class="franja falla">MANTENIM.</p><img src="sitio/retratos/D-01.png" alt="" width="120" height="120">
+          <h3>D-01</h3><p class="tipo">DRON · AZOTEAS</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="cinta" aria-label="Reglas del manual del operador">
+      <div class="cinta-pista">
+        <span>«Ningún dron despega sin consultar el clima.»</span>
+        <span>«Lo peligroso nunca vuela.»</span>
+        <span>«Con 25 % de batería, a recargar.»</span>
+        <span>«A igual costo, va el que está más cerca.»</span>
+        <span>«La cafetería no despacha en festivo.»</span>
+        <span>«Lo frágil no viaja en orugas.»</span>
+        <span>— Manual del operador, pág. 12</span>
+      </div>
+    </div>
+
+    <!-- 02 · Demo ---------------------------------------------------------------------------------->
+    <section class="carbon seccion" id="demo">
+      <header class="cabecera" data-revelar>
+        <p class="marcador claro"><span class="numero">02</span> <span class="mano-chica">así funciona</span></p>
+        <h2 class="gigante">UN TURNO EN LA CONSOLA</h2>
+        <p class="lead">No es un video. Es una simulación real del programa, grabada desde
+          <code>CentroControl</code> y dibujada con los mismos mapas de la aplicación. Toca un paso para saltar a él.</p>
+      </header>
+
+      <div class="demo" data-revelar>
+        <div class="consola" id="consola">
+          <div class="consola-barra" id="demo-barra">UdeM·DESPACHO | 4 robots | 0 en ruta | 0 en espera</div>
+          <div class="consola-mapa" id="demo-mapa">
+            <canvas id="demo-lienzo" aria-label="Mapa del campus con los robots en movimiento"></canvas>
+            <div class="pildora-clima" id="demo-clima">cargando la demo…</div>
+            <div class="aviso" id="demo-aviso" hidden></div>
+          </div>
+          <div class="consola-abajo">
+            <div class="plantilla" id="demo-plantilla"></div>
+            <div class="radio">
+              <p class="radio-titulo">RADIO</p>
+              <div class="registro" id="demo-registro" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="consola-controles">
+            <button id="demo-play" aria-label="Pausar">❚❚</button>
+            <button id="demo-reiniciar" aria-label="Reiniciar">↺</button>
+            <button id="demo-velocidad" aria-label="Velocidad">×1</button>
+            <button id="demo-modo" aria-label="Cambiar entre 2D y 3D">2D/3D</button>
+            <div class="linea-tiempo"><div id="demo-avance"></div></div>
+            <span id="demo-reloj">00:00</span>
+          </div>
+        </div>
+
+        <ol class="guion" id="guion">
+          <li data-paso="1"><span class="num">01</span><div><h3>Llega una llamada</h3>
+            <p>Un documento de la Biblioteca a Derecho. AUTO compara costos y elige <b>R-01</b>, el más barato.</p></div></li>
+          <li data-paso="2"><span class="num">02</span><div><h3>Un almuerzo caliente</h3>
+            <p>Sale de la cafetería. Solo <b>R-02</b> tiene control de temperatura: la carga elige por capacidades, no por clase.</p></div></li>
+          <li data-paso="3"><span class="num">03</span><div><h3>Tormenta eléctrica</h3>
+            <p>Un acta a la Azotea B11 solo la lleva el dron. Open-Meteo dice tormenta: <b>drones en tierra</b> y la llamada espera.</p></div></li>
+          <li data-paso="4"><span class="num">04</span><div><h3>Escampa</h3>
+            <p>El reintento automático la asigna a <b>D-01</b>, que despega, vuela recto y aterriza en la azotea.</p></div></li>
+          <li data-paso="5"><span class="num">05</span><div><h3>Una llamada imposible</h3>
+            <p>Material peligroso a una azotea: ningún robot podrá llevarla nunca. Falla y queda en la bitácora.</p></div></li>
+          <li data-paso="6"><span class="num">06</span><div><h3>A recargar</h3>
+            <p>El operador manda a <b>O-01</b> a mantenimiento. El asignador lo cronometra y vuelve solo a los 30 s.</p></div></li>
+          <li data-paso="7"><span class="num">07</span><div><h3>Despacho manual</h3>
+            <p>El operador intenta un frágil con O-01: <b>rechazado</b>, está recargando. Pulsa AUTO y lo toma R-02.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 03 · Qué hace ------------------------------------------------------------------------------->
+    <section class="papel seccion" id="funciones">
+      <header class="cabecera" data-revelar>
+        <p class="marcador"><span class="numero">03</span> <span class="mano-chica">el expediente</span></p>
+        <h2 class="gigante">QUÉ HACE</h2>
+      </header>
+      <div class="fichas">
+        <article class="ficha-papel inclinable" data-revelar style="--giro:-1.5deg">
+          <p class="num-ficha">A-01</p><h3>Rutas por los senderos reales</h3>
+          <p>La geometría del campus sale de OpenStreetMap. Los robots terrestres siguen el camino más corto por los senderos (Dijkstra); el dron vuela en línea recta.</p>
+          <p class="regla">RedSenderos · Ruta · trazar_ruta()</p>
+        </article>
+        <article class="ficha-papel inclinable" data-revelar style="--giro:1deg">
+          <p class="num-ficha">A-02</p><h3>Clima en vivo, con fallo seguro</h3>
+          <p>Antes de cada vuelo consulta Open-Meteo: viento, ráfagas, lluvia, visibilidad y tormentas. Si la API no responde, el dron no despega.</p>
+          <p class="regla">ProveedorClima · ReporteClima.es_favorable()</p>
+        </article>
+        <article class="ficha-papel inclinable" data-revelar style="--giro:-.5deg">
+          <p class="num-ficha">A-03</p><h3>Festivos de Colombia</h3>
+          <p>Nager.Date avisa si hoy es festivo. La cafetería cierra y sus pedidos esperan, sin tocar el asignador.</p>
+          <p class="regla">ProveedorCalendario · CalendarioNagerDate</p>
+        </article>
+        <article class="ficha-papel inclinable" data-revelar style="--giro:1.5deg">
+          <p class="num-ficha">A-04</p><h3>AUTO o a mano, siempre con el porqué</h3>
+          <p>AUTO elige el robot compatible más barato y, a igual costo, el más cercano. A mano, cada rechazo dice la regla: sobrepeso, zona, batería, clima.</p>
+          <p class="regla">AsignadorEntregas · motivo_rechazo()</p>
+        </article>
+        <article class="ficha-papel inclinable" data-revelar style="--giro:-1deg">
+          <p class="num-ficha">A-05</p><h3>Mantenimiento que vuelve solo</h3>
+          <p>Con 25 % de batería o menos el robot va a recargar; el operador también puede mandarlo. Vuelve al 100 % a los 30 s.</p>
+          <p class="regla">enviar_a_mantenimiento() · liberar_mantenimientos()</p>
+        </article>
+        <article class="ficha-papel inclinable" data-revelar style="--giro:.8deg">
+          <p class="num-ficha">A-06</p><h3>Bitácora exportable</h3>
+          <p>Entregas exitosas y fallidas, rechazos por clima, despachos rechazados y mantenimientos. Se exporta como reporte de texto.</p>
+          <p class="regla">Bitacora · TipoEvento</p>
+        </article>
+        <article class="ficha-papel inclinable ficha-ancha" data-revelar style="--giro:-.6deg">
+          <p class="num-ficha">A-07</p><h3>El campus en 2D y 3D</h3>
+          <p>three.js con edificios extruidos, luces de noche, nubes, lluvia y niebla según el clima. Tres vistas: DESPACHO, CALLES y SATÉLITE. Sin WebGL, un mapa 2D en canvas hace lo mismo.</p>
+          <div class="capturas">
+            <img src="img/web_3d.png" alt="Vista 3D del centro de control" loading="lazy">
+            <img src="img/vista_satelite_3d.png" alt="Vista satélite en 3D" loading="lazy">
+            <img src="img/web_2d_noche.png" alt="Mapa 2D de noche" loading="lazy">
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 04 · Por dentro ------------------------------------------------------------------------------>
+    <section class="azul seccion" id="poo">
+      <header class="cabecera" data-revelar>
+        <p class="marcador"><span class="numero">04</span> <span class="mano-chica">por dentro</span></p>
+        <h2 class="gigante">DISEÑADO CON POO</h2>
+        <p class="lead">El dominio no sabe que existe una página web, y el asignador no sabe qué API de clima usa.</p>
+      </header>
+
+      <div class="poo">
+        <div class="capas" data-revelar>
+          <div class="capa" style="--i:0"><h3>Presentación</h3><p>CentroControl · PuenteWeb · página web</p></div>
+          <div class="capa" style="--i:1"><h3>Asignación</h3><p>AsignadorEntregas</p></div>
+          <div class="capa" style="--i:2"><h3>Dominio</h3><p>Robot · Carga · Batería · Flota · Solicitud · Bitácora</p></div>
+          <div class="capa" style="--i:3"><h3>Servicios</h3><p>ProveedorClima · ProveedorCalendario</p></div>
+        </div>
+
+        <div class="intercambio" id="intercambio" data-revelar>
+          <p class="etiqueta-mono">LA PRUEBA DEL PRD · SUSTITUIR EL CLIMA EN VIVO</p>
+          <div class="piezas">
+            <div class="pieza fija"><h3>AsignadorEntregas</h3><p>_intentar() · despachar()</p><p class="sello">SIN CAMBIOS</p></div>
+            <div class="enchufe" aria-hidden="true"><span>ProveedorClima</span></div>
+            <div class="pieza movil" id="pieza-clima"><h3 id="pieza-nombre">ServicioClimaOpenMeteo</h3><p id="pieza-detalle">HTTP · timeout 5 s · caché 5 min</p></div>
+          </div>
+          <button class="boton boton-carbon" id="boton-intercambio" aria-pressed="false">Cambiar a simulado <span class="flecha" aria-hidden="true">⇄</span></button>
+          <pre class="codigo"><code>asignador.cambiar_proveedor_clima(ServicioClimaSimulado(viento_kmh=45))</code></pre>
+        </div>
+
+        <div class="relaciones">
+          <article class="ficha-papel" data-revelar style="--giro:-1deg"><p class="num-ficha">HERENCIA</p><h3>Robot → Dron</h3>
+            <p>Un dron <b>es un</b> robot: redefine zonas, costo, ruta y <code>requiere_clima()</code>. El asignador no pregunta el tipo.</p></article>
+          <article class="ficha-papel" data-revelar style="--giro:1deg"><p class="num-ficha">COMPOSICIÓN</p><h3>Robot ◆ Batería</h3>
+            <p>La batería nace y muere con su robot, y solo cambia con <code>consumir()</code> y <code>recargar()</code>.</p></article>
+          <article class="ficha-papel" data-revelar style="--giro:-.5deg"><p class="num-ficha">AGREGACIÓN</p><h3>Flota ◇ Robot</h3>
+            <p>Los robots existen por sí mismos: se cargan de <code>campus.json</code> y se quitan sin destruirlos.</p></article>
+        </div>
+        <p class="enlaces-doc" data-revelar>
+          <a class="boton boton-azul" href="https://github.com/gtorresc/udem-despacho/blob/main/docs/fase3-uml/diagrama_clases_v3.png">UML v3 <span class="flecha">↗</span></a>
+          <a class="boton boton-azul" href="https://github.com/gtorresc/udem-despacho/blob/main/docs/CAMBIOS_DISENO.md">Anexo de cambios <span class="flecha">↗</span></a>
+          <a class="boton boton-azul" href="https://github.com/gtorresc/udem-despacho#extender-el-sistema">Extender el sistema <span class="flecha">↗</span></a>
+        </p>
+      </div>
+    </section>
+
+    <!-- 05 · Instalación ----------------------------------------------------------------------------->
+    <section class="papel seccion" id="instalacion">
+      <header class="cabecera" data-revelar>
+        <p class="marcador"><span class="numero">05</span> <span class="mano-chica">manos a la obra</span></p>
+        <h2 class="gigante">INSTALAR EN 5 MINUTOS</h2>
+      </header>
+      <ol class="pasos">
+        <li data-revelar><span class="num-paso">1</span><div>
+          <h3>Lo que necesitas</h3>
+          <p><b>Python 3.10 o superior</b> y <b>Windows 10/11</b> con WebView2 (viene instalado en Windows 11). Git es opcional.</p>
+          <p class="nota">¿No sabes tu versión? Escribe <code>python --version</code> en una terminal.</p></div></li>
+        <li data-revelar><span class="num-paso">2</span><div>
+          <h3>Descarga el proyecto</h3>
+          <div class="comando"><code>git clone https://github.com/gtorresc/udem-despacho.git</code><button class="copiar">Copiar</button></div>
+          <p class="nota">Sin Git: <a href="https://github.com/gtorresc/udem-despacho/archive/refs/heads/main.zip">descarga el ZIP</a> y descomprímelo.</p></div></li>
+        <li data-revelar><span class="num-paso">3</span><div>
+          <h3>Entra a la carpeta</h3>
+          <div class="comando"><code>cd udem-despacho</code><button class="copiar">Copiar</button></div></div></li>
+        <li data-revelar><span class="num-paso">4</span><div>
+          <h3>Opcional: un entorno virtual</h3>
+          <div class="comando"><code>python -m venv .venv</code><button class="copiar">Copiar</button></div>
+          <div class="comando"><code>.venv\Scripts\activate</code><button class="copiar">Copiar</button></div>
+          <p class="nota">Así las dependencias no se mezclan con las de otros proyectos.</p></div></li>
+        <li data-revelar><span class="num-paso">5</span><div>
+          <h3>Instala las dependencias</h3>
+          <div class="comando"><code>pip install -r requirements.txt</code><button class="copiar">Copiar</button></div>
+          <p class="nota">requests, pillow, pywebview y pytest.</p></div></li>
+        <li data-revelar><span class="num-paso">6</span><div>
+          <h3>Abre el centro de control</h3>
+          <div class="comando"><code>python main.py</code><button class="copiar">Copiar</button></div>
+          <table class="variantes">
+            <tr><td><code>python main.py --real</code></td><td>clima de Open-Meteo y festivos de Nager.Date (necesita internet)</td></tr>
+            <tr><td><code>python main.py --consola</code></td><td>la demo por texto, sin ventana</td></tr>
+            <tr><td><code>python main.py --depurar</code></td><td>abre las herramientas del navegador</td></tr>
+          </table></div></li>
+        <li data-revelar><span class="num-paso">7</span><div>
+          <h3>Comprueba que todo está bien</h3>
+          <div class="comando"><code>python -m pytest</code><button class="copiar">Copiar</button></div>
+          <p class="nota">Deberías ver <b>269 passed</b>.</p></div></li>
+      </ol>
+
+      <div class="problemas" data-revelar>
+        <h3 class="mano-titulo">¿Algo salió mal?</h3>
+        <details><summary>La ventana no abre o sale en blanco</summary>
+          <p>Falta WebView2. Instálalo desde la página de Microsoft («Evergreen Runtime») y vuelve a abrir. Mientras tanto, <code>python main.py --consola</code> funciona sin ventana.</p></details>
+        <details><summary>«vista realista sin conexión» al pulsar V</summary>
+          <p>Las vistas CALLES y SATÉLITE descargan imágenes la primera vez. Sin internet el mapa se queda en DESPACHO, que funciona offline.</p></details>
+        <details><summary>Con <code>--real</code> los drones nunca vuelan</summary>
+          <p>Es el fallo seguro: si Open-Meteo no responde, el clima queda «no disponible» y ningún dron despega. Revisa tu conexión o usa el clima simulado del panel.</p></details>
+        <details><summary><code>pip</code> no se reconoce como comando</summary>
+          <p>Usa <code>python -m pip install -r requirements.txt</code>. Si tampoco funciona, reinstala Python marcando «Add Python to PATH».</p></details>
+      </div>
+    </section>
+
+    <!-- 06 · Uso ------------------------------------------------------------------------------------>
+    <section class="carbon seccion" id="uso">
+      <header class="cabecera" data-revelar>
+        <p class="marcador claro"><span class="numero">06</span> <span class="mano-chica">guía rápida</span></p>
+        <h2 class="gigante">DESPACHA TU PRIMERA LLAMADA</h2>
+      </header>
+      <div class="uso">
+        <ol class="uso-pasos" data-revelar>
+          <li>En <b>NUEVA LLAMADA</b> elige origen, destino, carga y peso, y pulsa <b>CREAR LLAMADA</b>.</li>
+          <li>Aparece una baliza naranja sobre el edificio y se abre su ficha.</li>
+          <li>Pulsa <b>AUTO</b>, o haz clic en la tarjeta de un robot para despacharlo a mano.</li>
+          <li>Si no se puede, la ficha dice por qué. Si espera, se reintenta sola.</li>
+          <li>Mueve el viento o activa la tormenta en <b>CLIMA</b> y mira qué pasa con los drones.</li>
+          <li><b>EXPORTAR</b> guarda la bitácora completa como texto.</li>
+        </ol>
+        <div class="teclas" data-revelar>
+          <div><kbd>A</kbd><span>AUTO: el asignador elige</span></div>
+          <div><kbd>X</kbd><span>cancelar la llamada abierta</span></div>
+          <div><kbd>M</kbd><span>alternar 2D / 3D</span></div>
+          <div><kbd>R</kbd><span>girar el mapa 90°</span></div>
+          <div><kbd>V</kbd><span>vista DESPACHO / CALLES / SATÉLITE</span></div>
+          <div><kbd>Esc</kbd><span>cerrar las fichas</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 · Changelog ------------------------------------------------------------------------------->
+    <section class="mostaza seccion" id="changelog">
+      <header class="cabecera" data-revelar>
+        <p class="marcador"><span class="numero">07</span> <span class="mano-chica">episodios</span></p>
+        <h2 class="gigante">CHANGELOG</h2>
+        <p class="lead">El proyecto se construyó por fases, como pide el curso. Cada fila se abre.</p>
+      </header>
+      <div class="episodios">
+        <div class="episodios-cabecera"><span>N.º</span><span>VERSIÓN</span><span>FECHA</span><span>RESUMEN</span></div>
+        <details data-revelar><summary><span>08</span><span>Página y banner</span><span>01 nov 2026</span>
+          <span>Esta página, el banner y el social preview con el estilo de Dispatch, y el repo pasa a llamarse <code>udem-despacho</code>.</span></summary>
+          <ul><li>Demo grabada de una simulación real, reproducida con los mapas del programa.</li>
+            <li>Banner y social preview nuevos; README con la instalación al nombre nuevo.</li></ul></details>
+        <details data-revelar><summary><span>07</span><span>Revisión final · Fase 6</span><span>01 nov 2026</span>
+          <span>Tres arreglos de la última revisión y la reflexión crítica.</span></summary>
+          <ul><li>El viaje de una pendiente reasignada empieza en el mismo tick (estado() ya no falla).</li>
+            <li>El motivo de sobrepeso nombra al robot; un peso NaN se rechaza.</li>
+            <li>Fase 6: reflexión crítica en <code>docs/fase6-reflexion</code>.</li></ul></details>
+        <details data-revelar><summary><span>06</span><span>Revisión previa a la Fase 6</span><span>30 oct – 01 nov 2026</span>
+          <span>Llamadas imposibles que fallan, cancelar, recargar a mano y motivos claros.</span></summary>
+          <ul><li>ENTREGA_FALLIDA para lo que ningún robot podrá llevar nunca.</li>
+            <li>Botones CANCELAR (X) y RECARGAR; la batería se llena al salir del mantenimiento.</li>
+            <li>AUTO dice por qué espera cada robot; a igual costo gana el más cercano.</li>
+            <li>Arreglos de la web: selector con <code>--real</code>, memoria de la GPU, tecla M.</li></ul></details>
+        <details data-revelar><summary><span>05</span><span><a href="https://github.com/gtorresc/udem-despacho/tree/v2-final">v2-final</a> · UdeM·DESPACHO</span><span>28 oct 2026</span>
+          <span>La versión aprobada: centro de control web con el campus en 2D/3D.</span></summary>
+          <ul><li>Rutas por senderos reales (Dijkstra) y geometría de OpenStreetMap.</li>
+            <li>Clima extendido (niebla, tormenta), festivos con Nager.Date y despacho manual.</li>
+            <li>Interfaz web con pywebview y three.js; retratos de RoboHash; UML v3.</li></ul></details>
+        <details data-revelar><summary><span>04</span><span><a href="https://github.com/gtorresc/udem-despacho/tree/v1-entrega">v1-entrega</a> · Fase 5</span><span>25 oct 2026</span>
+          <span>La implementación entregada: dominio, clima, asignación e interfaz de escritorio.</span></summary>
+          <ul><li>Jerarquías Robot y Carga, Batería por composición, Flota por agregación.</li>
+            <li>AsignadorEntregas con ProveedorClima inyectado y Open-Meteo con fallo seguro.</li>
+            <li>110 pruebas con pytest; anexo de cambios de diseño.</li></ul></details>
+        <details data-revelar><summary><span>03</span><span>Fase 4 · Justificación</span><span>16 oct 2026</span>
+          <span>Cada decisión de diseño comparada con su alternativa.</span></summary>
+          <ul><li>Capacidades del robot en vez de <code>isinstance</code> (D4) y jerarquía de cargas (D3).</li></ul></details>
+        <details data-revelar><summary><span>02</span><span>Fases 2 y 3 · CRC y UML</span><span>15 oct 2026</span>
+          <span>Tarjetas CRC, diagrama de clases y primera entrega aprobada.</span></summary>
+          <ul><li>UML v1 derivado de las tarjetas CRC; presentación de la primera entrega.</li></ul></details>
+        <details data-revelar><summary><span>01</span><span>Fase 1 · Análisis</span><span>14 oct 2026</span>
+          <span>Requisitos, supuestos propios y preguntas al cliente.</span></summary>
+          <ul><li>Supuestos S1–S10 (clima, festivos, rodeos, niebla…) que luego guían el código.</li></ul></details>
+      </div>
+      <p class="todos-commits" data-revelar><a class="boton boton-carbon" href="https://github.com/gtorresc/udem-despacho/commits/main">Ver todos los commits <span class="flecha">↗</span></a></p>
+    </section>
+
+    <!-- 08 · Contacto -------------------------------------------------------------------------------->
+    <section class="papel seccion" id="contacto">
+      <header class="cabecera" data-revelar>
+        <p class="marcador"><span class="numero">08</span> <span class="mano-chica">hablemos</span></p>
+        <h2 class="gigante">CONTACTO</h2>
+      </header>
+      <div class="contacto">
+        <article class="carnet inclinable" data-revelar style="--giro:-2deg">
+          <p class="carnet-cabecera">CARNÉ DE OPERADOR · UdeM</p>
+          <img src="https://github.com/gtorresc.png?size=200" alt="Foto de perfil de gtorresc en GitHub" width="120" height="120" loading="lazy">
+          <div>
+            <h3>gtorresc</h3>
+            <p class="tipo">Programación Orientada a Objetos · Universidad de Medellín</p>
+            <p><a href="https://github.com/gtorresc">github.com/gtorresc</a></p>
+            <p><a href="mailto:gtorres865@soyudemedellin.edu.co">gtorres865@soyudemedellin.edu.co</a></p>
+          </div>
+        </article>
+        <div class="contacto-acciones" data-revelar>
+          <p class="mano-titulo">¿Encontraste un error o tienes una idea?</p>
+          <a class="boton boton-azul" href="https://github.com/gtorresc/udem-despacho/issues/new">Reportar un problema <span class="flecha">↗</span></a>
+          <a class="boton boton-carbon" href="mailto:gtorres865@soyudemedellin.edu.co">Escribir un correo <span class="flecha">✉</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie carbon">
+    <p class="pie-marca">UdeM·DESPACHO</p>
+    <p>Datos del mapa © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> ·
+      clima de <a href="https://open-meteo.com">Open-Meteo</a> · festivos de <a href="https://date.nager.at">Nager.Date</a> ·
+      imágenes satelitales de Esri · retratos de <a href="https://robohash.org">RoboHash</a> (CC-BY) ·
+      <a href="https://threejs.org">three.js</a> (MIT) · fuentes Oswald, Share Tech Mono y Caveat (OFL).</p>
+    <p>Proyecto académico de la Universidad de Medellín, bajo
+      <a href="https://github.com/gtorresc/udem-despacho/blob/main/LICENSE.md">licencia MIT</a>.
+      El estilo visual se inspira en <i>Dispatch</i> de AdHoc Studio; no hay afiliación.</p>
+  </footer>
+</body>
+</html>

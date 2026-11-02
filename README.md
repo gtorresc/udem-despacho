@@ -7,9 +7,11 @@
   <img src="https://img.shields.io/badge/pruebas-269%20en%20verde-3f9a6b" alt="269 pruebas en verde">
   <img src="https://img.shields.io/badge/interfaz-web%203D%20%C2%B7%20three.js-1d7f7b" alt="Interfaz web 3D con three.js">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/licencia-MIT-f08a2c" alt="Licencia MIT"></a>
+  <a href="https://gtorresc.github.io/udem-despacho/"><img src="https://img.shields.io/badge/p%C3%A1gina-demo%20en%20vivo-f8ca43" alt="Página del proyecto con la demo en vivo"></a>
 </p>
 
 <p align="center">
+  <a href="https://gtorresc.github.io/udem-despacho/"><b>Página del proyecto</b></a> ·
   <a href="#capturas">Capturas</a> ·
   <a href="#características">Características</a> ·
   <a href="#instalación">Instalación</a> ·
