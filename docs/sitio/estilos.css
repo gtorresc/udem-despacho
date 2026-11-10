@@ -129,6 +129,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 600; margin: 0; line-heigh
   animation: mecer 6s ease-in-out infinite alternate;
 }
 .credencial { left: calc((100% - var(--ancho-cred)) * var(--k) / 3); }
+.credencial:hover, .credencial:focus-within { z-index: 5; }
 .credencial:nth-child(1) { --k: 0; animation-delay: -1s; }
 .credencial:nth-child(2) { --k: 1; animation-delay: -3s; }
 .credencial:nth-child(3) { --k: 2; animation-delay: -2s; }
