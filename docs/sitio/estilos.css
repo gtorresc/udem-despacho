@@ -109,7 +109,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 600; margin: 0; line-heigh
 /* --- 01 Portada ------------------------------------------------------------------------------ */
 .portada { min-height: calc(100vh - 58px); display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 40px;
   padding: 60px max(28px, calc((100% - var(--ancho)) / 2)) 80px; overflow: hidden; }
-.titular { font-size: clamp(64px, 9.6vw, 148px); letter-spacing: -.04em; line-height: .9; white-space: nowrap; }
+.titular { font-size: clamp(64px, 7.6vw, 124px); letter-spacing: -.04em; line-height: .9; white-space: nowrap; }
 .titular .letra { display: inline-block; opacity: 0; translate: 0 .5em; animation: entrar .6s cubic-bezier(.2, .8, .2, 1.2) forwards; }
 @keyframes entrar { to { opacity: 1; translate: 0 0; } }
 .mano { font: 700 clamp(34px, 4vw, 54px) var(--mano); color: var(--bronce); margin: -6px 0 0 34%; transform: rotate(-5deg);
@@ -121,7 +121,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 600; margin: 0; line-heigh
 .contadores dt { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
 .contadores dd { margin: 0; font: 44px var(--titulo); line-height: 1; }
 
-.abanico { position: relative; height: 520px; --ancho-cred: min(210px, 38%); }
+.abanico { position: relative; height: 520px; --ancho-cred: min(210px, 44%); }
 .credencial {
   position: absolute; top: 40px; width: var(--ancho-cred); background: var(--papel-claro); border: 2px solid var(--carbon);
   text-align: center; box-shadow: 8px 10px 0 #25242426; padding-bottom: 12px;
