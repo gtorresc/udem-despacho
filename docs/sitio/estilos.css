@@ -121,7 +121,7 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 600; margin: 0; line-heigh
 .contadores dt { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
 .contadores dd { margin: 0; font: 44px var(--titulo); line-height: 1; }
 
-.abanico { position: relative; height: 420px; --ancho-cred: min(150px, 31%); }
+.abanico { position: relative; height: 520px; --ancho-cred: min(210px, 38%); }
 .credencial {
   position: absolute; top: 40px; width: var(--ancho-cred); background: var(--papel-claro); border: 2px solid var(--carbon);
   text-align: center; box-shadow: 8px 10px 0 #25242426; padding-bottom: 12px;
@@ -134,10 +134,10 @@ h1, h2, h3 { font-family: var(--titulo); font-weight: 600; margin: 0; line-heigh
 .credencial:nth-child(3) { --k: 2; animation-delay: -2s; }
 .credencial:nth-child(4) { --k: 3; animation-delay: -4s; }
 @keyframes mecer { to { translate: 0 -10px; } }
-.credencial .franja { margin: 0; padding: 4px 0; color: var(--papel-claro); font-size: 13px; letter-spacing: .08em; }
+.credencial .franja { margin: 0; padding: 6px 0; color: var(--papel-claro); font-size: 15px; letter-spacing: .08em; }
 .credencial img { display: block; width: 72%; height: auto; aspect-ratio: 1; margin: 10px auto 0; }
-.credencial h3 { font-size: clamp(26px, 3vw, 40px); }
-.credencial .tipo { margin: 2px 0 0; font-size: 12px; color: var(--bronce); letter-spacing: .06em; }
+.credencial h3 { font-size: clamp(30px, 3.4vw, 48px); white-space: nowrap; }
+.credencial .tipo { margin: 2px 0 0; font-size: 14px; color: var(--bronce); letter-spacing: .06em; }
 .franja.libre { background: var(--libre); } .franja.ocupado { background: var(--ocupado); } .franja.falla { background: var(--falla); }
 
 /* --- Cinta mostaza en movimiento ----------------------------------------------------------------- */
@@ -294,7 +294,7 @@ kbd { display: inline-grid; place-items: center; min-width: 58px; height: 52px; 
   .marca { justify-self: start; }
   .portada { min-height: auto; padding-top: 40px; }
   .titular { white-space: normal; }
-  .abanico { height: 300px; }
+  .abanico { height: 380px; }
   .credencial { top: 10px; }
   .portada, .demo, .poo, .uso, .contacto, .fichas, .relaciones, .capturas { grid-template-columns: minmax(0, 1fr); }
   .episodios-cabecera { display: none; }
