@@ -18,6 +18,10 @@
   <script type="module" src="sitio/sitio.js"></script>
 </head>
 <body>
+  <div class="cortina" aria-hidden="true"><span class="marca">UdeM·DESPACHO</span></div>
+  <noscript><style>.cortina { display: none; }</style></noscript>
+  <!-- en línea y no en sitio.js: la cortina se levanta aunque el módulo falle -->
+  <script>Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]).then(() => document.documentElement.classList.add("lista"));</script>
   <a class="saltar" href="#demo">Saltar a la demo</a>
   <div class="progreso" id="progreso" aria-hidden="true"></div>
 

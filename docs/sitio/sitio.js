@@ -16,11 +16,27 @@ const alVer = new IntersectionObserver(entradas => entradas.forEach(e => {
 }), { threshold: 0.15 });
 document.querySelectorAll("[data-revelar]").forEach(el => alVer.observe(el));
 
-// --- Titular letra por letra -----------------------------------------------------------------------------
+// --- Titulares con máscara: cada trozo sube desde detrás de su recorte (estilos.css, .palabra) -------------
+function partir(el, trozos, union) {
+  el.setAttribute("aria-label", el.textContent);
+  el.innerHTML = trozos.map((t, n) => `<span class="palabra" aria-hidden="true"><span style="--n:${n}">${t}</span></span>`).join(union);
+}
+document.querySelectorAll(".gigante").forEach(h => partir(h, h.textContent.trim().split(/\s+/), " "));
 const titular = $("titular");
-titular.setAttribute("aria-label", titular.textContent);
-titular.innerHTML = [...titular.textContent]
-  .map((c, i) => `<span class="letra" aria-hidden="true" style="animation-delay:${i * 45}ms">${c}</span>`).join("");
+partir(titular, [...titular.textContent], "");  // la portada va letra por letra
+void titular.offsetWidth;  // fija el estado inicial antes de soltar la transición
+document.fonts.ready.then(() => titular.classList.add("visible"));
+
+// --- Enlaces y botones cuyo texto rueda al pasar el cursor --------------------------------------------------
+document.querySelectorAll(".nav-lado a, .boton").forEach(el => {
+  const texto = el.firstChild;
+  if (texto.nodeType !== Node.TEXT_NODE) return;
+  const rueda = document.createElement("span");
+  rueda.className = "rueda";
+  rueda.innerHTML = "<span></span>";
+  rueda.firstChild.textContent = rueda.firstChild.dataset.texto = texto.textContent.trim();
+  texto.replaceWith(rueda);
+});
 
 // --- Contadores que suben --------------------------------------------------------------------------------
 const contar = new IntersectionObserver(entradas => entradas.forEach(e => {
@@ -64,6 +80,29 @@ if (!reducido && matchMedia("(hover: hover)").matches) {
     });
     ficha.addEventListener("pointerleave", () => { ficha.style.transform = ""; });
   });
+
+  // las credenciales de la portada se arrastran y vuelven a su sitio con rebote
+  document.querySelectorAll(".credencial").forEach(cred => {
+    let x0 = 0, y0 = 0;
+    cred.addEventListener("pointerdown", e => {
+      x0 = e.clientX; y0 = e.clientY;
+      cred.setPointerCapture(e.pointerId);
+      cred.classList.remove("soltada");
+      cred.classList.add("agarrada");
+    });
+    cred.addEventListener("pointermove", e => {  // va después del de .inclinable, así que manda este
+      if (!cred.classList.contains("agarrada")) return;
+      const dx = e.clientX - x0, dy = e.clientY - y0;
+      cred.style.transform = `translate(${dx}px, calc(var(--y) + ${dy}px)) rotate(${dx / 18}deg)`;
+    });
+    const soltar = () => {
+      if (!cred.classList.replace("agarrada", "soltada")) return;
+      cred.style.transform = "";
+    };
+    cred.addEventListener("pointerup", soltar);
+    cred.addEventListener("pointercancel", soltar);
+    cred.addEventListener("transitionend", () => cred.classList.remove("soltada"));
+  });
 }
 
 // --- Botones Copiar ------------------------------------------------------------------------------------------
@@ -98,20 +137,23 @@ const PROVEEDORES = [
     codigo: "asignador.cambiar_proveedor_clima(ServicioClimaSimulado(viento_kmh=45))" },
 ];
 let proveedor = 0;
-$("boton-intercambio").addEventListener("click", () => {
-  const pieza = $("pieza-clima");
-  pieza.classList.add("saliendo");
-  setTimeout(() => {
-    proveedor = 1 - proveedor;
-    const p = PROVEEDORES[proveedor];
-    $("pieza-nombre").textContent = p.nombre;
-    $("pieza-detalle").textContent = p.detalle;
-    $("boton-intercambio").firstChild.textContent = p.boton + " ";
-    $("boton-intercambio").setAttribute("aria-pressed", proveedor === 1);
-    document.querySelector("#intercambio .codigo code").textContent = p.codigo;
-    pieza.classList.toggle("simulado", proveedor === 1);
-    pieza.classList.remove("saliendo");
-  }, reducido ? 0 : 280);
+$("boton-intercambio").addEventListener("click", async () => {
+  // el nombre viejo sale hacia arriba y el nuevo entra desde abajo; el recorte se queda en su renglón
+  const textos = reducido ? [] : [$("pieza-nombre"), $("pieza-detalle")];
+  const salidas = textos.map(t => t.animate({ translate: ["0 0", "0 -100%"], clipPath: ["inset(0)", "inset(100% 0 0 0)"] },
+                                            { duration: 280, easing: "cubic-bezier(.55, 0, 1, .45)", fill: "forwards" }));
+  await Promise.all(salidas.map(a => a.finished));
+  proveedor = 1 - proveedor;
+  const p = PROVEEDORES[proveedor], rotulo = document.querySelector("#boton-intercambio .rueda span");
+  $("pieza-nombre").textContent = p.nombre;
+  $("pieza-detalle").textContent = p.detalle;
+  rotulo.textContent = rotulo.dataset.texto = p.boton;
+  $("boton-intercambio").setAttribute("aria-pressed", proveedor === 1);
+  document.querySelector("#intercambio .codigo code").textContent = p.codigo;
+  $("pieza-clima").classList.toggle("simulado", proveedor === 1);
+  salidas.forEach(a => a.cancel());
+  textos.forEach((t, i) => t.animate({ translate: ["0 100%", "0 0"], clipPath: ["inset(0 0 100% 0)", "inset(0)"] },
+                                     { duration: 600, delay: i * 70, easing: "cubic-bezier(.16, 1, .3, 1)", fill: "backwards" }));
 });
 
 // --- La demo: reproduce una simulación real grabada de CentroControl -----------------------------------------
